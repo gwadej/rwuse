@@ -1,0 +1,14 @@
+[package]
+name = "rwuse"
+version = "0.1.0"
+authors = ["G. Wade Johnson <gwadej@anomaly.org>"]
+edition = "2018"
+
+[dependencies]
+itertools = "~0.8.0"
+rand = "~0.6.5"
+
+[dependencies.quicksilver]
+version = "~0.3.12"
+default-features = false
+# features = []
