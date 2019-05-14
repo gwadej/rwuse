@@ -13,6 +13,7 @@ use quicksilver::{
     lifecycle::{Settings, State, Window, run},
 };
 
+mod coord;
 mod phase;
 mod ampl;
 
@@ -21,33 +22,39 @@ use itertools::repeat_n;
 use rand::random;
 use phase::Phase;
 use ampl::Ampl;
+use coord::Coord;
 
 struct Wuse
 {
     t:      usize,
     end:    i32,
-    center: Vector,
+    center: Coord,
     amp:    Ampl,
     angle:  Phase,
     lines:  VecDeque<Line>,
     colors: Vec<Color>,
 }
 
-pub(crate) fn rand(num: u32) -> u32
+pub(crate) fn rand(num: i32) -> i32
 {
-    random::<u32>() % num
+    random::<i32>() % num
+}
+
+pub(crate) fn frand(num: u32) -> f32
+{
+    (random::<u32>() % num) as f32
 }
 
 impl Wuse
 {
-    fn new_pt(&self, t: usize) -> Vector
+    fn new_pt(&self, t: usize) -> Coord
     {
-        Vector::new(
-            self.center.x + (self.amp.x as f32 * self.angle.x(t).sin()).floor(),
-            self.center.y + (self.amp.y as f32 * self.angle.y(t).cos()).floor(),
+        Coord::new(
+            self.center.x + (self.amp.fx() * self.angle.x(t).sin()).floor() as i32,
+            self.center.y + (self.amp.fy() * self.angle.y(t).cos()).floor() as i32,
         )
     }
-    fn create_line(&self, t: usize) -> (Vector, Vector)
+    fn create_line(&self, t: usize) -> (Coord, Coord)
     {
         let pt = self.new_pt(t);
         (pt.clone(), pt)
@@ -57,25 +64,35 @@ impl Wuse
     {
         (0..NUM_LINES).into_iter()
                 .map(|t| self.create_line(t))
-                .map(|(p1, p2)| Line::new(p1, p2))
+                .map(|(p1, p2)| Line::new(p1.f(), p2.f()))
                 .collect()
     }
 
     fn next_line(&mut self)
     {
         if self.t % NUM_LINES == 0 { self.end = 3 - self.end; }
-        let mut line = self.lines.pop_front().unwrap();
+        let mut line = self.lines.pop_back().unwrap();
 
         let pt = self.new_pt( self.t );
-        if self.end == 1 { line.a = pt } else { line.b = pt }
-        self.lines.push_back(line);
+        if self.end == 1 { line.a = pt.f() } else { line.b = pt.f() }
+        self.lines.push_front(line);
 
-        if pt.x == self.center.x { self.amp.new_x() }
-        if pt.y == self.center.y { self.amp.new_y() }
-        if self.t % 351 == 0 { self.angle.new_y( self.t ) }
-        if self.t % 571 == 0 { self.angle.new_x( self.t ) }
+        self.rescale(&pt);
+        self.phase_change();
 
         self.t += 1;
+    }
+
+    fn rescale(&mut self, pt: &Coord)
+    {
+        if pt.x == self.center.x { self.amp.new_x() }
+        if pt.y == self.center.y { self.amp.new_y() }
+    }
+
+    fn phase_change(&mut self)
+    {
+        if self.t % 351 == 0 { self.angle.new_y( self.t ) }
+        if self.t % 571 == 0 { self.angle.new_x( self.t ) }
     }
 }
 
@@ -98,8 +115,8 @@ impl State for Wuse
         let mut wuse = Wuse{
             t:      NUM_LINES,
             end:    1,
-            center: Vector::new(MAX_X/2,MAX_Y/2),
-            amp:    Ampl::new(300,300),
+            center: Coord::new(MAX_X/2,MAX_Y/2),
+            amp:    Ampl::new(MAX_X/2,MAX_Y/2),
             angle:  Phase::new(1.345, 0.0),
             lines:  VecDeque::new(),
             colors: colors

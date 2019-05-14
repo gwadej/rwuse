@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
 use quicksilver::geom::Vector;
-use crate::rand;
+use crate::frand;
 
 pub struct Phase
 {
@@ -18,7 +18,7 @@ impl Phase
     {
         Phase {
             theta: Vector::new(x, y),
-            tau:   Vector::new(26.0 + rand(124) as f32, 50.0+rand(30) as f32),
+            tau:   Vector::new(26.0 + frand(124), 50.0+frand(30)),
             dtau:  Vector::new(5, 5),
             a:     5.0,
             b:     5.0,
@@ -31,7 +31,7 @@ impl Phase
         self.tau.x   += self.dtau.x;
         if self.tau.x > 150.0 { self.a = -25.0 }
         if self.tau.x < 26.0  { self.a = 5.0 }
-        self.dtau.x = self.a + rand(21) as f32;
+        self.dtau.x = self.a + frand(21);
     }
 
     pub fn new_y(&mut self, t: usize)
@@ -40,7 +40,7 @@ impl Phase
         self.tau.y   += self.dtau.y;
         if self.tau.y > 80.0 { self.b = -25.0 }
         if self.tau.y < 50.0  { self.b = 5.0 }
-        self.dtau.y = self.b + rand(21) as f32;
+        self.dtau.y = self.b + frand(21);
     }
 
     pub fn x(&self, t: usize) -> f32
