@@ -38,9 +38,9 @@ impl Phase
     {
         self.theta.y += (t as f32 *  PI/self.tau.y)/(self.tau.y/self.dtau.y + 1.0);
         self.tau.y   += self.dtau.y;
-        if self.tau.y > 80.0 { self.a = -25.0 }
-        if self.tau.y < 50.0  { self.a = 5.0 }
-        self.dtau.y = self.a + rand(21) as f32;
+        if self.tau.y > 80.0 { self.b = -25.0 }
+        if self.tau.y < 50.0  { self.b = 5.0 }
+        self.dtau.y = self.b + rand(21) as f32;
     }
 
     pub fn x(&self, t: usize) -> f32
