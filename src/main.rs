@@ -34,6 +34,17 @@ pub(crate) fn rand(num: u32) -> u32
     random::<u32>() % num
 }
 
+impl Wuse
+{
+    fn new_pt(&self) -> Vector
+    {
+        Vector::new(
+            self.center.x + (self.amp.x as f32 * self.angle.x(self.t).sin()).floor(),
+            self.center.y + (self.amp.y as f32 * self.angle.y(self.t).cos()).floor(),
+        )
+    }
+}
+
 impl State for Wuse
 {
     fn new() -> Result<Wuse>

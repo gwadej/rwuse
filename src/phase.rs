@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-use quicksilver::{Result, geom::Vector};
+use quicksilver::geom::Vector;
 use crate::rand;
 
 pub struct Phase
