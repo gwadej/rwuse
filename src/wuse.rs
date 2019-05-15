@@ -15,18 +15,19 @@ use crate::coord::Coord;
 
 pub struct Wuse
 {
-    t:      usize,
-    end:    i32,
-    center: Coord,
-    amp:    Ampl,
-    angle:  Phase,
-    lines:  VecDeque<Line>,
-    colors: Vec<Color>,
+    line_width: f32,
+    t:          usize,
+    end:        i32,
+    center:     Coord,
+    amp:        Ampl,
+    angle:      Phase,
+    lines:      VecDeque<Line>,
+    colors:     Vec<Color>,
 }
 
 impl Wuse
 {
-    pub fn sized(num_lines: usize, max_x: i32, max_y: i32) -> Result<Self>
+    pub fn sized(num_lines: usize, max_x: i32, max_y: i32, line_width: f32) -> Result<Self>
     {
         let silver: Color = Color::from_hex("C0C0C0");
         let gold: Color   = Color::from_hex("FFD700");
@@ -41,13 +42,14 @@ impl Wuse
         let dupes = num_lines / colors.len();
         let colors = colors.iter().flat_map(|c| repeat_n(c.clone(), dupes)).collect();
         let mut wuse = Wuse{
-            t:      num_lines,
-            end:    1,
-            center: Coord::new(max_x/2,max_y/2),
-            amp:    Ampl::new(max_x/2,max_y/2),
-            angle:  Phase::new(1.345, 0.0),
-            lines:  VecDeque::new(),
-            colors: colors
+            line_width,
+            t:          num_lines,
+            end:        1,
+            center:     Coord::new(max_x/2,max_y/2),
+            amp:        Ampl::new(max_x/2,max_y/2),
+            angle:      Phase::new(1.345, 0.0),
+            lines:      VecDeque::new(),
+            colors:     colors
         };
         wuse.lines = wuse.initialize(num_lines);
         Ok(wuse)
@@ -106,7 +108,7 @@ impl State for Wuse
 {
     fn new() -> Result<Wuse>
     {
-        Wuse::sized( 12, 100, 100 )
+        Wuse::sized( 48, 100, 100, 1.0 )
     }
 
     fn update(&mut self, _window: &mut Window) -> Result<()>
@@ -122,7 +124,7 @@ impl State for Wuse
         for (ln, clr) in self.lines.iter().zip(self.colors.iter())
         {
             window.draw_ex(
-                &ln.with_thickness(1.0),
+                &ln.with_thickness(self.line_width),
                 Col(*clr),
                 Transform::IDENTITY,
                 5

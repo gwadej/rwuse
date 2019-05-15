@@ -7,7 +7,8 @@ extern crate clap;
 const NUM_LINES: usize = 48;
 const MAX_X: i32 = 800;
 const MAX_Y: i32 = 600;
-const RATE_STR: &str = "30.0";
+const RATE_STR: &str = "25.0";
+const LINE_THICKNESS: &str = "1.0";
 
 use quicksilver::{
     geom::Vector,
@@ -54,6 +55,11 @@ fn main()
                 .arg(Arg::with_name("fullscreen")
                       .short("f")
                       .help("Display in fullscreen mode"))
+                .arg(Arg::with_name("thickness")
+                     .short("t")
+                     .help("Specify the line thickness as a floating number.")
+                     .default_value(LINE_THICKNESS)
+                     .takes_value(true))
                 .arg(Arg::with_name("rate")
                      .long("rate")
                      .help("Specify milliseconds between update calls. Defaults to 30.")
@@ -78,11 +84,12 @@ fn main()
 
     if args.is_present("fullscreen") { settings.fullscreen = true; }
     settings.update_rate = args.value_of("rate").unwrap().parse::<f64>().expect("rate is not a valid floating number");
+    let thickness = args.value_of("thickness").unwrap().parse::<f32>().expect("Line thickness is not a valid floating number");
 
     run_with(
         "Wuse",
         Vector::new(max_x, max_y),
         settings,
-        || Wuse::sized(NUM_LINES, max_x, max_y)
+        || Wuse::sized(NUM_LINES, max_x, max_y, thickness)
     );
 }
