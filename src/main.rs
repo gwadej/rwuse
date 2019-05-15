@@ -40,17 +40,23 @@ fn main()
                 .version(crate_version!())
                 .author(crate_authors!())
                 .about("Display time waster.")
+                .after_help("Control the display with keys:\n\n  \
+                Q  - quit\n  \
+                F  - run faster\n  \
+                S  - run slower\n  \
+                R  - reset speed\n")
                 .arg(Arg::with_name("geom")
                      .long("geom")
                      .help("Supply the display width and height as two integers.")
                      .takes_value(true)
+                     .value_names(&["w","h"])
                      .number_of_values(2))
                 .arg(Arg::with_name("fullscreen")
                       .short("f")
                       .help("Display in fullscreen mode"))
                 .arg(Arg::with_name("rate")
                      .long("rate")
-                     .help("Specify millisecond between update calls. Defaults to 30.")
+                     .help("Specify milliseconds between update calls. Defaults to 30.")
                      .default_value(RATE_STR)
                      .takes_value(true))
                 .get_matches();

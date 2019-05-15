@@ -2,7 +2,8 @@ use quicksilver::{
     Result,
     geom::{Line,Transform},
     graphics::{Background::Col, Color},
-    lifecycle::{State, Window},
+    input::{ButtonState,Key},
+    lifecycle::{Event, State, Window},
 };
 
 use std::collections::VecDeque;
@@ -130,4 +131,40 @@ impl State for Wuse
 
         Ok(())
     }
+
+    fn event(&mut self, event: &Event, window: &mut Window) -> Result<()>
+    {
+        if let Event::Key(k, btn) = event
+        {
+            match (k, btn)
+            {
+                (Key::Q, ButtonState::Pressed) => window.close(),
+                (Key::R, ButtonState::Pressed) => window.set_update_rate(30.0),
+                (Key::F, ButtonState::Pressed) => window.set_update_rate(speed_up(window.update_rate())),
+                (Key::S, ButtonState::Pressed) => window.set_update_rate(slow_down(window.update_rate())),
+                _ => (),
+            }
+        }
+        Ok(())
+    }
+}
+
+fn speed_up(rate: f64) -> f64
+{
+         if rate > 500.0 { rate }
+    else if rate > 100.0 { rate - 10.0 }
+    else if rate > 10.0  { rate / 2.0 }
+    else if rate > 1.0   { rate - 1.0 }
+    else if rate > 0.1   { rate - 0.1 }
+    else                 { 0.1 }
+}
+
+fn slow_down(rate: f64) -> f64
+{
+         if rate < 500.0 { rate + 10.0 }
+    else if rate < 100.0 { rate * 1.5 }
+    else if rate < 1.0   { rate + 0.1 }
+    else if rate < 0.1   { rate + 0.05 }
+    else if rate < 0.02  { 0.02 }
+    else                 { rate }
 }
