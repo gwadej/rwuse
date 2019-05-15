@@ -5,15 +5,16 @@ extern crate rand;
 extern crate clap;
 
 const NUM_LINES: usize = 48;
-const MAX_X: &str = "800";
-const MAX_Y: &str = "600";
+const MAX_X: i32 = 800;
+const MAX_Y: i32 = 600;
+const RATE_STR: &str = "30.0";
 
 use quicksilver::{
     geom::Vector,
     lifecycle::{Settings, run_with},
 };
 
-use clap::{App,Arg,ArgMatches};
+use clap::{App,Arg};
 
 mod ampl;
 mod coord;
@@ -33,38 +34,49 @@ pub(crate) fn frand(num: u32) -> f32
     (random::<u32>() % num) as f32
 }
 
-fn validate_size(val: &str) -> Result<(), &'static str>
-{
-    match val.parse::<i32>()
-    {
-        Ok(val) if val > 0 => Ok(()),
-        Ok(val)  => Err("Not a positive integer"),
-        _ => Err("Not a valid integer"),
-    }
-}
-
 fn main()
 {
     let args = App::new(crate_name!())
                 .version(crate_version!())
                 .author(crate_authors!())
-                .about("")
-                .arg(Arg::with_name("width")
-                     .short("w")
-                     .help("Declare the width of the display")
-                     .default_value(MAX_X))
-                .arg(Arg::with_name("height")
-                     .short("h")
-                     .help("Declare the height of the display")
-                     .default_value(MAX_Y))
+                .about("Display time waster.")
+                .arg(Arg::with_name("geom")
+                     .long("geom")
+                     .help("Supply the display width and height as two integers.")
+                     .takes_value(true)
+                     .number_of_values(2))
+                .arg(Arg::with_name("fullscreen")
+                      .short("f")
+                      .help("Display in fullscreen mode"))
+                .arg(Arg::with_name("rate")
+                     .long("rate")
+                     .help("Specify millisecond between update calls. Defaults to 30.")
+                     .default_value(RATE_STR)
+                     .takes_value(true))
                 .get_matches();
 
-    let max_x = args.value_of("width").unwrap().parse::<i32>().expect("Width is not a valid integer");
-    let max_y = args.value_of("height").unwrap().parse::<i32>().expect("Height is not a valid integer");
+    let (max_x, max_y) = if args.is_present("geom")
+    {
+        let mut it = args.values_of("geom").unwrap();
+        (
+          it.next().unwrap().parse::<i32>().expect("Width is not a valid integer"),
+          it.next().unwrap().parse::<i32>().expect("Height is not a valid integer"),
+        )
+    }
+    else
+    {
+        ( MAX_X, MAX_Y )
+    };
+
+    let mut settings = Settings::default();
+
+    if args.is_present("fullscreen") { settings.fullscreen = true; }
+    settings.update_rate = args.value_of("rate").unwrap().parse::<f64>().expect("rate is not a valid floating number");
+
     run_with(
         "Wuse",
         Vector::new(max_x, max_y),
-        Settings::default(),
+        settings,
         || Wuse::sized(NUM_LINES, max_x, max_y)
     );
 }
