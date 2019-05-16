@@ -42,10 +42,10 @@ fn main()
                 .author(crate_authors!())
                 .about("Display time waster.")
                 .after_help("Control the display with keys:\n\n  \
-                Q  - quit\n  \
-                F  - run faster\n  \
-                S  - run slower\n  \
-                R  - reset speed\n")
+                q  - quit\n  \
+                +  - run faster\n  \
+                -  - run slower\n  \
+                r  - reset speed\n")
                 .arg(Arg::with_name("geom")
                      .long("geom")
                      .help("Supply the display width and height as two integers.")

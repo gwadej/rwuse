@@ -2,7 +2,6 @@ use quicksilver::{
     Result,
     geom::{Line,Transform},
     graphics::{Background::Col, Color},
-    input::{ButtonState,Key},
     lifecycle::{Event, State, Window},
 };
 
@@ -136,14 +135,14 @@ impl State for Wuse
 
     fn event(&mut self, event: &Event, window: &mut Window) -> Result<()>
     {
-        if let Event::Key(k, btn) = event
+        if let Event::Typed(c) = event
         {
-            match (k, btn)
+            match c
             {
-                (Key::Q, ButtonState::Pressed) => window.close(),
-                (Key::R, ButtonState::Pressed) => window.set_update_rate(30.0),
-                (Key::F, ButtonState::Pressed) => window.set_update_rate(speed_up(window.update_rate())),
-                (Key::S, ButtonState::Pressed) => window.set_update_rate(slow_down(window.update_rate())),
+                'q' => window.close(),
+                'r' => window.set_update_rate(25.0),
+                '+' => window.set_update_rate(speed_up(window.update_rate())),
+                '-' => window.set_update_rate(slow_down(window.update_rate())),
                 _ => (),
             }
         }
