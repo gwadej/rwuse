@@ -153,20 +153,34 @@ impl State for Wuse
 
 fn speed_up(rate: f64) -> f64
 {
-         if rate > 500.0 { rate }
-    else if rate > 100.0 { rate - 10.0 }
-    else if rate > 10.0  { rate / 2.0 }
-    else if rate > 1.0   { rate - 1.0 }
-    else if rate > 0.1   { rate - 0.1 }
-    else                 { 0.1 }
+    limit(
+            if rate > 500.0 { 500.0 }
+        else if rate <= 0.05 { 0.02 }
+        else                 { rate - step(rate) }
+    )
 }
 
 fn slow_down(rate: f64) -> f64
 {
-         if rate < 500.0 { rate + 10.0 }
-    else if rate < 100.0 { rate * 1.5 }
-    else if rate < 1.0   { rate + 0.1 }
-    else if rate < 0.1   { rate + 0.05 }
-    else if rate < 0.02  { 0.02 }
-    else                 { rate }
+    limit(
+            if rate >= 500.0 { 500.0 }
+        else if rate < 0.05   { 0.02 }
+        else                  { rate + step(rate) }
+    )
+}
+
+fn step(rate: f64) -> f64
+{
+         if rate > 100.0 { 50.0 }
+    else if rate > 10.0  { 10.0 }
+    else if rate > 1.0   { 1.0 }
+    else if rate > 0.2   { 0.1 }
+    else { 0.01 }
+}
+
+fn limit(rate: f64) -> f64
+{
+    if rate > 500.0 { 500.0 }
+    else if rate < 0.05 { 0.05 }
+    else { rate }
 }
