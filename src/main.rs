@@ -5,10 +5,10 @@ extern crate rand;
 extern crate clap;
 
 const NUM_LINES: usize = 48;
-const MAX_X: i32 = 800;
-const MAX_Y: i32 = 600;
-const RATE_STR: &str = "25.0";
-const LINE_THICKNESS: &str = "1.0";
+const WIDTH: i32       = 800;
+const HEIGHT: i32      = 600;
+const RATE_STR: &str   = "25.0";
+const THICKNESS: &str  = "1.0";
 
 use quicksilver::{
     geom::Vector,
@@ -58,7 +58,7 @@ fn main()
                 .arg(Arg::with_name("thickness")
                      .short("t")
                      .help("Specify the line thickness as a floating number.")
-                     .default_value(LINE_THICKNESS)
+                     .default_value(THICKNESS)
                      .takes_value(true))
                 .arg(Arg::with_name("rate")
                      .long("rate")
@@ -67,29 +67,36 @@ fn main()
                      .takes_value(true))
                 .get_matches();
 
-    let (max_x, max_y) = if args.is_present("geom")
+    let (width, height) = if args.is_present("geom")
     {
         let mut it = args.values_of("geom").unwrap();
         (
-          it.next().unwrap().parse::<i32>().expect("Width is not a valid integer"),
-          it.next().unwrap().parse::<i32>().expect("Height is not a valid integer"),
+          opt_convert::<i32>(it.next(), "Width is not a valid integer"),
+          opt_convert::<i32>(it.next(), "Height is not a valid integer"),
         )
     }
     else
     {
-        ( MAX_X, MAX_Y )
+        ( WIDTH, HEIGHT )
     };
 
     let mut settings = Settings::default();
 
     if args.is_present("fullscreen") { settings.fullscreen = true; }
-    settings.update_rate = args.value_of("rate").unwrap().parse::<f64>().expect("rate is not a valid floating number");
-    let thickness = args.value_of("thickness").unwrap().parse::<f32>().expect("Line thickness is not a valid floating number");
+    settings.update_rate = opt_convert(args.value_of("rate"), "rate is not a valid floating point number");
+    let thickness: f32 = opt_convert(args.value_of("thickness"), "Thickness is not a valid floating point number");
 
     run_with(
         "Wuse",
-        Vector::new(max_x, max_y),
+        Vector::new(width, height),
         settings,
-        || Wuse::sized(NUM_LINES, max_x, max_y, thickness)
+        || Wuse::sized(NUM_LINES, width, height, thickness)
     );
+}
+
+fn opt_convert<T>(opt: Option<&str>, errmsg: &str) -> T
+    where <T as std::str::FromStr>::Err : std::fmt::Debug,
+            T: std::str::FromStr
+{
+    opt.unwrap().parse::<T>().expect(errmsg)
 }
