@@ -45,10 +45,10 @@ OPTIONS:
 
 Control the display with keys:
 
-  q  - quit
-  +  - run faster
-  -  - run slower
-  r  - reset speed
+  * q  - quit
+  * \+  - run faster
+  * \-  - run slower
+  * r  - reset speed
 
 ## Non-Obvious Effects
 
