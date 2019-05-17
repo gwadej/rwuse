@@ -1,3 +1,5 @@
+// Copyright 2019 G. Wade Johnson
+
 use std::f32::consts::PI;
 use quicksilver::geom::Vector;
 use crate::frand;

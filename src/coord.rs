@@ -1,3 +1,5 @@
+// Copyright 2019 G. Wade Johnson
+
 use quicksilver::geom::Vector;
 
 #[derive(Clone)]

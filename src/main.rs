@@ -1,3 +1,5 @@
+// Copyright 2019 G. Wade Johnson
+
 extern crate quicksilver;
 extern crate itertools;
 extern crate rand;
@@ -40,7 +42,7 @@ fn main()
     let args = App::new(crate_name!())
                 .version(crate_version!())
                 .author(crate_authors!())
-                .about("Display time waster.")
+                .about("Wuse is a relatively simple piece of eye candy.")
                 .after_help("Control the display with keys:\n\n  \
                 q  - quit\n  \
                 +  - run faster\n  \
