@@ -46,10 +46,10 @@ OPTIONS:
 
 Control the display with keys:
 
-  * q  - quit
-  * \+  - run faster
-  * \-  - run slower
-  * r  - reset speed
+    `q`:   quit
+    `+`:   run faster
+    `-`:   run slower
+    `r`:   reset speed
 
 ## Non-Obvious Effects
 
@@ -68,4 +68,6 @@ gaps. At 0.02, the effect is more like a cloud of multi-color dots.
 Larger thicknesses generate an effect that looks somewhat like a series of planks
 rotating through space. A value around 25.0 shows this effect well.
 
-## Copyright 2019 G. Wade Johnson
+----
+
+Copyright 2019 G. Wade Johnson
