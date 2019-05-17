@@ -6,11 +6,11 @@ use crate::frand;
 
 const TAU_X: f32       = 26.0;
 const TAU_X_RANGE: f32 = 124.0;
-const TAU_X_HIGH: f32  = 150.0;
+const TAU_X_HIGH: f32  = TAU_X + TAU_X_RANGE;
 
 const TAU_Y: f32       = 50.0;
 const TAU_Y_RANGE: f32 = 30.0;
-const TAU_Y_HIGH: f32  = 80.0;
+const TAU_Y_HIGH: f32  = TAU_Y + TAU_Y_RANGE;
 
 const BASE_DTAU_P: f32 = 5.0;
 const BASE_DTAU_N: f32 = -25.0;

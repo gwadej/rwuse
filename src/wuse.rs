@@ -14,11 +14,14 @@ use crate::phase::Phase;
 use crate::ampl::Ampl;
 use crate::coord::Coord;
 
+const ANGLE_X: f32 = 1.345;
+const ANGLE_Y: f32 = 0.0;
+
 pub struct Wuse
 {
     line_width: f32,
     t:          usize,
-    end:        i32,
+    start:      bool,
     center:     Coord,
     amp:        Ampl,
     angle:      Phase,
@@ -30,25 +33,26 @@ impl Wuse
 {
     pub fn sized(num_lines: usize, max_x: i32, max_y: i32, line_width: f32) -> Result<Self>
     {
+        // Based on HTML/CSS named colors
         let silver: Color = Color::from_hex("C0C0C0");
         let gold: Color   = Color::from_hex("FFD700");
         let brown: Color  = Color::from_hex("A52A2A");
 
-        let colors: Vec<Color>
-            = vec![Color::WHITE, Color::ORANGE, Color::YELLOW,
-                    Color::MAGENTA, Color::RED, Color::BLUE,
-                    Color::GREEN, Color::PURPLE, gold,
-                    Color::CYAN, silver, brown
-                ];
+        let colors: Vec<Color> = vec![
+            Color::WHITE, Color::ORANGE, Color::YELLOW,
+            Color::MAGENTA, Color::RED, Color::BLUE,
+            Color::GREEN, Color::PURPLE, gold,
+            Color::CYAN, silver, brown
+        ];
         let dupes = num_lines / colors.len();
         let colors = colors.iter().flat_map(|c| repeat_n(c.clone(), dupes)).collect();
         let mut wuse = Wuse{
             line_width,
             t:          num_lines,
-            end:        1,
+            start:      true,
             center:     Coord::new(max_x/2,max_y/2),
             amp:        Ampl::new(max_x/2,max_y/2),
-            angle:      Phase::new(1.345, 0.0),
+            angle:      Phase::new(ANGLE_X, ANGLE_Y),
             lines:      VecDeque::new(),
             colors:     colors
         };
@@ -79,12 +83,12 @@ impl Wuse
 
     fn next_line(&mut self)
     {
-        if self.t % self.lines.len() == 0 { self.end = 3 - self.end; }
+        if self.t % self.lines.len() == 0 { self.start = !self.start; }
 
         let pt = self.new_pt( self.t );
 
         let mut line = self.lines.pop_back().unwrap();
-        if self.end == 1 { line.a = pt.f() } else { line.b = pt.f() }
+        if self.start { line.a = pt.f() } else { line.b = pt.f() }
         self.lines.push_front(line);
 
         self.rescale(&pt);
@@ -101,6 +105,7 @@ impl Wuse
 
     fn phase_change(&mut self)
     {
+        // These values were chosen through trial and error
         if self.t % 351 == 0 { self.angle.new_y( self.t ) }
         if self.t % 571 == 0 { self.angle.new_x( self.t ) }
     }
@@ -171,6 +176,7 @@ fn slow_down(rate: f64) -> f64
     )
 }
 
+// Pseudo-logarithmic scale for speed steps
 fn step(rate: f64) -> f64
 {
          if rate > 100.0 { 50.0 }

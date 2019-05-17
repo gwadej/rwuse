@@ -16,7 +16,7 @@ impl Ampl
     pub fn new(xrng: i32, yrng: i32) -> Self
     {
         let span = Coord::new(7*xrng/10, 7*yrng/10);
-        let min = Coord::new(span.x/3, span.y/3);
+        let min  = Coord::new(span.x/3, span.y/3);
         let mut this = Ampl {
             span,
             min,

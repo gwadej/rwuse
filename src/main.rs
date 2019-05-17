@@ -24,8 +24,8 @@ mod coord;
 mod phase;
 mod wuse;
 
-use rand::random;
 use wuse::Wuse;
+use rand::random;
 
 pub(crate) fn rand(num: i32) -> i32
 {
@@ -36,6 +36,7 @@ pub(crate) fn frand(num: f32) -> f32
 {
     (random::<f32>() * num) as f32
 }
+
 
 fn main()
 {
