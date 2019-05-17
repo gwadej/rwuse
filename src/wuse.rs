@@ -78,9 +78,10 @@ impl Wuse
     fn next_line(&mut self)
     {
         if self.t % self.lines.len() == 0 { self.end = 3 - self.end; }
-        let mut line = self.lines.pop_back().unwrap();
 
         let pt = self.new_pt( self.t );
+
+        let mut line = self.lines.pop_back().unwrap();
         if self.end == 1 { line.a = pt.f() } else { line.b = pt.f() }
         self.lines.push_front(line);
 

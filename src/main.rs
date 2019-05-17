@@ -30,9 +30,9 @@ pub(crate) fn rand(num: i32) -> i32
     random::<i32>() % num
 }
 
-pub(crate) fn frand(num: u32) -> f32
+pub(crate) fn frand(num: f32) -> f32
 {
-    (random::<u32>() % num) as f32
+    (random::<f32>() * num) as f32
 }
 
 fn main()
