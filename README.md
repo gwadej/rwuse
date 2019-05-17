@@ -39,6 +39,7 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
+
         --geom <w> <h>    Supply the display width and height as two integers.
         --rate <rate>     Specify milliseconds between update calls. Defaults to 30. [default: 25.0]
     -t <thickness>        Specify the line thickness as a floating number. [default: 1.0]
