@@ -1,0 +1,7 @@
+# TODO for rwuse
+
+    * Blonde suggested varying the line thickness.
+        - LineWidth classes
+        - One with a constant thinckness
+        - One that varies between two values, matching length
+        - One that varies between two values, with a different period than the length
