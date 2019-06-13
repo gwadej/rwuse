@@ -26,6 +26,7 @@ mod color_scheme;
 
 use wuse::Wuse;
 use rand::random;
+use crate::color_scheme::Scheme;
 
 pub(crate) fn rand(num: i32) -> i32
 {
@@ -99,7 +100,7 @@ fn main()
         "Wuse",
         Vector::new(width, height),
         settings,
-        || Wuse::sized(color_scheme.into(), width, height, thickness)
+        || Wuse::sized(Scheme::from_name(color_scheme).unwrap_or_default(), width, height, thickness)
     );
 }
 

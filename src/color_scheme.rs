@@ -6,39 +6,59 @@ pub enum Scheme
 {
     Valen,
     Rainbow,
+    Blues,
+    Reds,
+    Greens,
     Resistor,
     WarmCool,
     HueWheel,
 }
 
-pub const NAMES: [&str; 5] = [ "default", "rainbow", "resistor", "warmcool", "huewheel" ];
+pub const NAMES: [&str; 8] = [
+    "default", "rainbow", "blues", "reds", "greens",
+    "resistor", "warmcool", "huewheel"
+];
 
-impl From<&str> for Scheme
+impl Default for Scheme
 {
-    fn from(name: &str) -> Self
+    fn default() -> Self
     {
-        match name
-        {
-            "default"  => Scheme::Valen,
-            "valen"    => Scheme::Valen,
-            "rainbow"  => Scheme::Rainbow,
-            "resistor" => Scheme::Resistor,
-            "warmcool" => Scheme::WarmCool,
-            "huewheel" => Scheme::HueWheel,
-            _          => panic!("Unknown color scheme"),
-        }
+        Scheme::Valen
     }
 }
 
-pub fn get_colors(s: Scheme) -> Vec<Color>
+impl Scheme
 {
-    match s
+    pub fn get_colors(self) -> Vec<Color>
     {
-        Scheme::Valen    => make_valen_colors(),
-        Scheme::Rainbow  => make_rainbow_colors(),
-        Scheme::Resistor => make_resistor_colors(),
-        Scheme::WarmCool => make_warm_cool_colors(),
-        Scheme::HueWheel => make_hue_wheel_colors(),
+        match self
+        {
+            Scheme::Valen    => make_valen_colors(),
+            Scheme::Rainbow  => make_rainbow_colors(),
+            Scheme::Blues    => make_blue_colors(),
+            Scheme::Reds     => make_red_colors(),
+            Scheme::Greens   => make_green_colors(),
+            Scheme::Resistor => make_resistor_colors(),
+            Scheme::WarmCool => make_warm_cool_colors(),
+            Scheme::HueWheel => make_hue_wheel_colors(),
+        }
+    }
+
+    pub fn from_name(name: &str) -> Result<Self, &str>
+    {
+        match name
+        {
+            "default"  => Ok(Scheme::Valen),
+            "valen"    => Ok(Scheme::Valen),
+            "rainbow"  => Ok(Scheme::Rainbow),
+            "blues"    => Ok(Scheme::Blues),
+            "reds"     => Ok(Scheme::Reds),
+            "greens"   => Ok(Scheme::Greens),
+            "resistor" => Ok(Scheme::Resistor),
+            "warmcool" => Ok(Scheme::WarmCool),
+            "huewheel" => Ok(Scheme::HueWheel),
+            _          => Err("Unknown scheme name"),
+        }
     }
 }
 
@@ -117,5 +137,50 @@ fn make_hue_wheel_colors() -> Vec<Color>
         Color::from_hex("8000FF"),
         Color::from_hex("FF00FF"),
         Color::from_hex("FF0080")
+    ]
+}
+
+fn make_blue_colors() -> Vec<Color>
+{
+    vec![
+        Color::from_hex("#8080ff"),
+        Color::from_hex("#6e6fe3"),
+        Color::from_hex("#5c5ec8"),
+        Color::from_hex("#4b4ead"),
+        Color::from_hex("#3a3f93"),
+        Color::from_hex("#29307a"),
+        Color::from_hex("#182261"),
+        Color::from_hex("#06144a"),
+        Color::from_hex("#000034"),
+    ]
+}
+
+fn make_red_colors() -> Vec<Color>
+{
+    vec![
+        Color::from_hex("#ff3030"),
+        Color::from_hex("#e3262d"),
+        Color::from_hex("#c81d2a"),
+        Color::from_hex("#ad1526"),
+        Color::from_hex("#930e21"),
+        Color::from_hex("#79081c"),
+        Color::from_hex("#600416"),
+        Color::from_hex("#48020e"),
+        Color::from_hex("#320000"),
+    ]
+}
+
+fn make_green_colors() -> Vec<Color>
+{
+    vec![
+        Color::from_hex("#00aa00"),
+        Color::from_hex("#00950c"),
+        Color::from_hex("#008112"),
+        Color::from_hex("#006d14"),
+        Color::from_hex("#025a14"),
+        Color::from_hex("#054813"),
+        Color::from_hex("#083610"),
+        Color::from_hex("#09250a"),
+        Color::from_hex("#001500"),
     ]
 }

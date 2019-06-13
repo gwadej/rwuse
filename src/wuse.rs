@@ -13,7 +13,7 @@ use itertools::repeat_n;
 use crate::phase::Phase;
 use crate::ampl::Ampl;
 use crate::coord::Coord;
-use crate::color_scheme::{Scheme,get_colors};
+use crate::color_scheme::Scheme;
 
 const ANGLE_X: f32 = 1.345;
 const ANGLE_Y: f32 = 0.0;
@@ -32,11 +32,9 @@ pub struct Wuse
 
 impl Wuse
 {
-    //pub fn sized(num_lines: usize, max_x: i32, max_y: i32, line_width: f32) -> Result<Self>
     pub fn sized(scheme: Scheme, max_x: i32, max_y: i32, line_width: f32) -> Result<Self>
     {
-        let colors: Vec<Color> = get_colors(scheme);
-//        let dupes = num_lines / colors.len();
+        let colors: Vec<Color> = scheme.get_colors();
         let dupes = 4;
         let num_lines = dupes * colors.len();
         let colors = colors.iter().flat_map(|c| repeat_n(c.clone(), dupes)).collect();
