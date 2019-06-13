@@ -6,7 +6,6 @@ extern crate rand;
 #[macro_use]
 extern crate clap;
 
-const NUM_LINES: usize = 48;
 const WIDTH: i32       = 800;
 const HEIGHT: i32      = 600;
 const RATE_STR: &str   = "25.0";
@@ -23,6 +22,7 @@ mod ampl;
 mod coord;
 mod phase;
 mod wuse;
+mod color_scheme;
 
 use wuse::Wuse;
 use rand::random;
@@ -68,6 +68,11 @@ fn main()
                      .help("Specify milliseconds between update calls. Defaults to 30.")
                      .default_value(RATE_STR)
                      .takes_value(true))
+                .arg(Arg::with_name("colorscheme")
+                     .long("colors")
+                     .help("Specify a color scheme")
+                     .possible_values(&color_scheme::NAMES)
+                     .takes_value(true))
                 .get_matches();
 
     let (width, height) = if args.is_present("geom")
@@ -88,12 +93,13 @@ fn main()
     if args.is_present("fullscreen") { settings.fullscreen = true; }
     settings.update_rate = opt_convert(args.value_of("rate"), "rate is not a valid floating point number");
     let thickness: f32 = opt_convert(args.value_of("thickness"), "Thickness is not a valid floating point number");
+    let color_scheme = args.value_of("colorscheme").unwrap_or("default");
 
     run_with(
         "Wuse",
         Vector::new(width, height),
         settings,
-        || Wuse::sized(NUM_LINES, width, height, thickness)
+        || Wuse::sized(color_scheme.into(), width, height, thickness)
     );
 }
 

@@ -13,6 +13,7 @@ use itertools::repeat_n;
 use crate::phase::Phase;
 use crate::ampl::Ampl;
 use crate::coord::Coord;
+use crate::color_scheme::{Scheme,get_colors};
 
 const ANGLE_X: f32 = 1.345;
 const ANGLE_Y: f32 = 0.0;
@@ -31,20 +32,13 @@ pub struct Wuse
 
 impl Wuse
 {
-    pub fn sized(num_lines: usize, max_x: i32, max_y: i32, line_width: f32) -> Result<Self>
+    //pub fn sized(num_lines: usize, max_x: i32, max_y: i32, line_width: f32) -> Result<Self>
+    pub fn sized(scheme: Scheme, max_x: i32, max_y: i32, line_width: f32) -> Result<Self>
     {
-        // Based on HTML/CSS named colors
-        let silver: Color = Color::from_hex("C0C0C0");
-        let gold: Color   = Color::from_hex("FFD700");
-        let brown: Color  = Color::from_hex("A52A2A");
-
-        let colors: Vec<Color> = vec![
-            Color::WHITE, Color::ORANGE, Color::YELLOW,
-            Color::MAGENTA, Color::RED, Color::BLUE,
-            Color::GREEN, Color::PURPLE, gold,
-            Color::CYAN, silver, brown
-        ];
-        let dupes = num_lines / colors.len();
+        let colors: Vec<Color> = get_colors(scheme);
+//        let dupes = num_lines / colors.len();
+        let dupes = 4;
+        let num_lines = dupes * colors.len();
         let colors = colors.iter().flat_map(|c| repeat_n(c.clone(), dupes)).collect();
         let mut wuse = Wuse{
             line_width,
@@ -115,7 +109,7 @@ impl State for Wuse
 {
     fn new() -> Result<Wuse>
     {
-        Wuse::sized( 48, 100, 100, 1.0 )
+        Wuse::sized( Scheme::Valen, 100, 100, 1.0 )
     }
 
     fn update(&mut self, _window: &mut Window) -> Result<()>
